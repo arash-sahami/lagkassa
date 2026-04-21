@@ -1,0 +1,121 @@
+<div class="page-container">
+  <div class="page-header">
+    <h1>Försäljning</h1>
+    <button mat-flat-button color="primary" (click)="openSaleDialog()">
+      <mat-icon>add_shopping_cart</mat-icon> Registrera försäljning
+    </button>
+  </div>
+
+  <!-- Summary cards -->
+  <div class="cards-grid" style="margin-bottom:24px">
+    <mat-card class="stat-card">
+      <mat-card-content>
+        <div class="stat-label">Total intäkt</div>
+        <div class="stat-value">{{ totalRevenue() | sek }}</div>
+      </mat-card-content>
+    </mat-card>
+    <mat-card class="stat-card">
+      <mat-card-content>
+        <div class="stat-label">Total vinst</div>
+        <div class="stat-value">{{ totalProfit() | sek }}</div>
+      </mat-card-content>
+    </mat-card>
+    <mat-card class="stat-card">
+      <mat-card-content>
+        <div class="stat-label">Till lagkassan</div>
+        <div class="stat-value">{{ totalTeamShare() | sek }}</div>
+      </mat-card-content>
+    </mat-card>
+    <mat-card class="stat-card">
+      <mat-card-content>
+        <div class="stat-label">Antal försäljningar</div>
+        <div class="stat-value">{{ treasury.sales().length }}</div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Försäljningshistorik</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      @if (sortedSales().length === 0) {
+        <div class="empty-state">
+          <mat-icon>storefront</mat-icon>
+          <p>Inga försäljningar ännu</p>
+          <button mat-flat-button color="primary" (click)="openSaleDialog()">Registrera försäljning</button>
+        </div>
+      } @else {
+        <div class="table-wrapper">
+          <table mat-table [dataSource]="sortedSales()" class="sales-table">
+
+            <ng-container matColumnDef="date">
+              <th mat-header-cell *matHeaderCellDef>Datum</th>
+              <td mat-cell *matCellDef="let s">{{ s.date }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="product">
+              <th mat-header-cell *matHeaderCellDef>Produkt</th>
+              <td mat-cell *matCellDef="let s">
+                <strong>{{ s.productName }}</strong>
+                @if (s.description) {
+                  <div class="sub-text">{{ s.description }}</div>
+                }
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="quantity">
+              <th mat-header-cell *matHeaderCellDef>Antal</th>
+              <td mat-cell *matCellDef="let s">{{ s.quantity }} st</td>
+            </ng-container>
+
+            <ng-container matColumnDef="revenue">
+              <th mat-header-cell *matHeaderCellDef>Intäkt</th>
+              <td mat-cell *matCellDef="let s">{{ s.totalRevenue | sek }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="profit">
+              <th mat-header-cell *matHeaderCellDef>Vinst</th>
+              <td mat-cell *matCellDef="let s" class="balance-positive">{{ s.totalProfit | sek }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="teamShare">
+              <th mat-header-cell *matHeaderCellDef>Lagandel</th>
+              <td mat-cell *matCellDef="let s" class="team-share">{{ s.teamShare | sek }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="playerShare">
+              <th mat-header-cell *matHeaderCellDef>Spelarandel</th>
+              <td mat-cell *matCellDef="let s">
+                @if (s.playerShare > 0) {
+                  <span class="player-share">{{ s.playerShare | sek }}</span>
+                } @else {
+                  <span class="no-player">–</span>
+                }
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="player">
+              <th mat-header-cell *matHeaderCellDef>Spelare</th>
+              <td mat-cell *matCellDef="let s">
+                {{ s.playerName ?? 'Hela laget' }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef></th>
+              <td mat-cell *matCellDef="let s">
+                <button mat-icon-button color="warn" (click)="confirmDelete(s.id, s.productName)">
+                  <mat-icon>delete_outline</mat-icon>
+                </button>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+        </div>
+      }
+    </mat-card-content>
+  </mat-card>
+</div>

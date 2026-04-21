@@ -1,0 +1,63 @@
+<div class="page-container">
+  <div class="page-header">
+    <h1>Lagkassa</h1>
+    <div class="header-actions">
+      <button mat-stroked-button (click)="openIncomeDialog()">
+        <mat-icon>add</mat-icon> Lägg till intäkt
+      </button>
+      <button mat-flat-button color="warn" (click)="openExpenseDialog()">
+        <mat-icon>remove</mat-icon> Lägg till utgift
+      </button>
+    </div>
+  </div>
+
+  <div class="balance-hero">
+    <div class="bal-label">Lagkassans saldo</div>
+    <div class="bal-amount" [class.negative]="treasury.teamBalance() < 0">
+      {{ treasury.teamBalance() | sek }}
+    </div>
+    <div class="bal-sub">{{ treasury.teamName() }} · {{ treasury.season() }}</div>
+  </div>
+
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Transaktioner</mat-card-title>
+      <mat-card-subtitle>Alla lagets in- och utbetalningar</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      @if (treasury.teamTransactions().length === 0) {
+        <div class="empty-state">
+          <mat-icon>account_balance</mat-icon>
+          <p>Inga transaktioner ännu</p>
+        </div>
+      } @else {
+        <div class="transaction-list">
+          @for (tx of treasury.teamTransactions(); track tx.id) {
+            <div class="transaction-item">
+              <div class="tx-icon" [class]="getTxClass(tx.type)">
+                <mat-icon>{{ txIcon(tx.type) }}</mat-icon>
+              </div>
+              <div class="tx-info">
+                <div class="tx-desc">{{ tx.description }}</div>
+                <div class="tx-meta">
+                  {{ tx.date }} · <span class="cat-chip cat-{{ tx.category }}">{{ tx.category }}</span>
+                </div>
+              </div>
+              <div class="tx-amount"
+                   [class.balance-positive]="tx.type !== 'team_expense'"
+                   [class.balance-negative]="tx.type === 'team_expense'">
+                {{ tx.type === 'team_expense' ? '-' : '+' }}{{ tx.amount | sek }}
+              </div>
+              @if (tx.type === 'team_income' || tx.type === 'team_expense') {
+                <button mat-icon-button color="warn" (click)="confirmDelete(tx.id, tx.description)"
+                        style="flex-shrink:0">
+                  <mat-icon>delete_outline</mat-icon>
+                </button>
+              }
+            </div>
+          }
+        </div>
+      }
+    </mat-card-content>
+  </mat-card>
+</div>

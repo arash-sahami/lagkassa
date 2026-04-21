@@ -1,0 +1,112 @@
+.back-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.left-badge {
+  background: #f44336;
+  color: white;
+  font-size: 0.78rem;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-weight: 600;
+}
+
+.header-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+.info-card {
+  position: sticky;
+  top: 80px;
+}
+
+.player-header {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.player-meta {
+  flex: 1;
+
+  .meta-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    color: #555;
+    margin-bottom: 4px;
+
+    mat-icon { font-size: 16px; width: 16px; height: 16px; color: #999; }
+
+    &.notes { color: #777; font-style: italic; }
+  }
+}
+
+.balance-card {
+  background: #e8f5e9;
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+  margin-bottom: 16px;
+
+  &.negative { background: #ffebee; }
+
+  .bal-label {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #555;
+    margin-bottom: 4px;
+  }
+
+  .bal-amount {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #2e7d32;
+  }
+
+  &.negative .bal-amount { color: #c62828; }
+}
+
+.stats-row {
+  display: flex;
+  justify-content: space-around;
+
+  .stat-item {
+    text-align: center;
+
+    .stat-num {
+      display: block;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #1b5e20;
+    }
+
+    .stat-desc {
+      font-size: 0.78rem;
+      color: #888;
+    }
+  }
+}
+
+@media (max-width: 900px) {
+  .detail-grid { grid-template-columns: 1fr; }
+  .info-card { position: static; }
+}
+
+@media (max-width: 600px) {
+  .header-actions { width: 100%; }
+  .page-header { flex-direction: column; align-items: flex-start; }
+}

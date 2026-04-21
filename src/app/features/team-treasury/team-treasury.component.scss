@@ -1,0 +1,49 @@
+.header-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.balance-hero {
+  background: linear-gradient(135deg, #1b5e20, #2e7d32);
+  color: white;
+  border-radius: 16px;
+  padding: 36px;
+  text-align: center;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 20px rgba(27,94,32,0.3);
+
+  .bal-label {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0.8;
+    margin-bottom: 8px;
+  }
+
+  .bal-amount {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+    &.negative { color: #ff8a80; }
+  }
+
+  .bal-sub {
+    font-size: 0.9rem;
+    opacity: 0.7;
+  }
+}
+
+.cat-chip {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 10px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  background: #e0e0e0;
+  color: #555;
+
+  &.cat-försäljning  { background: #e3f2fd; color: #1565c0; }
+  &.cat-cuper        { background: #fce4ec; color: #880e4f; }
+  &.cat-utrustning   { background: #f3e5f5; color: #6a1b9a; }
+  &.cat-resor        { background: #fff8e1; color: #f57f17; }
+  &.cat-träning      { background: #e8f5e9; color: #1b5e20; }
+}
+
+.transaction-item { align-items: flex-start; }

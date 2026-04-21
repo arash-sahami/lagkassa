@@ -1,0 +1,90 @@
+<div class="page-container">
+  <div class="page-header">
+    <h1>Transaktioner</h1>
+    <button mat-stroked-button (click)="exportCsv()" [disabled]="filteredTransactions().length === 0">
+      <mat-icon>download</mat-icon> Exportera CSV
+    </button>
+  </div>
+
+  <!-- Filters -->
+  <mat-card class="filter-card">
+    <mat-card-content>
+      <div class="filters">
+        <mat-form-field appearance="outline">
+          <mat-label>Typ</mat-label>
+          <mat-select [value]="filterType()" (valueChange)="filterType.set($event)">
+            @for (opt of typeOptions; track opt.value) {
+              <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Spelare</mat-label>
+          <mat-select [value]="filterPlayer()" (valueChange)="filterPlayer.set($event)">
+            <mat-option value="all">Alla spelare</mat-option>
+            @for (p of treasury.players(); track p.id) {
+              <mat-option [value]="p.id">{{ p.name }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Från datum</mat-label>
+          <input matInput type="date" [value]="filterFrom()" (change)="filterFrom.set($any($event.target).value)">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Till datum</mat-label>
+          <input matInput type="date" [value]="filterTo()" (change)="filterTo.set($any($event.target).value)">
+        </mat-form-field>
+
+        <button mat-stroked-button (click)="resetFilters()">
+          <mat-icon>clear</mat-icon> Rensa
+        </button>
+      </div>
+
+      <div class="filter-summary">
+        <span>{{ filteredTransactions().length }} transaktioner</span>
+        <span class="filter-total" [class.balance-positive]="totalFiltered() >= 0" [class.balance-negative]="totalFiltered() < 0">
+          Netto: {{ totalFiltered() | sek }}
+        </span>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card>
+    <mat-card-content>
+      @if (filteredTransactions().length === 0) {
+        <div class="empty-state">
+          <mat-icon>receipt_long</mat-icon>
+          <p>Inga transaktioner matchar filtret</p>
+        </div>
+      } @else {
+        <div class="transaction-list">
+          @for (tx of filteredTransactions(); track tx.id) {
+            <div class="transaction-item">
+              <div class="tx-icon" [class]="getTxClass(tx.type)">
+                <mat-icon>{{ txIcon(tx.type) }}</mat-icon>
+              </div>
+              <div class="tx-info">
+                <div class="tx-desc">{{ tx.description }}</div>
+                <div class="tx-meta">
+                  {{ tx.date }}
+                  · <span class="type-label">{{ txLabel(tx.type) }}</span>
+                  @if (tx.playerId) { · {{ getPlayerName(tx.playerId) }} }
+                  · <span class="cat-badge cat-{{ tx.category }}">{{ tx.category }}</span>
+                </div>
+              </div>
+              <div class="tx-amount"
+                   [class.balance-positive]="!isDebit(tx.type)"
+                   [class.balance-negative]="isDebit(tx.type)">
+                {{ isDebit(tx.type) ? '-' : '+' }}{{ tx.amount | sek }}
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </mat-card-content>
+  </mat-card>
+</div>

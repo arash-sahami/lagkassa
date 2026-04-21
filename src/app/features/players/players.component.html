@@ -1,0 +1,68 @@
+<div class="page-container">
+  <div class="page-header">
+    <h1>Spelare</h1>
+    <button mat-flat-button color="primary" (click)="openAddDialog()">
+      <mat-icon>person_add</mat-icon> Lägg till spelare
+    </button>
+  </div>
+
+  <div class="toolbar">
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-label>Sök spelare</mat-label>
+      <mat-icon matPrefix>search</mat-icon>
+      <input matInput [(ngModel)]="search" [ngModel]="search()" (ngModelChange)="search.set($event)" placeholder="Namn eller nummer...">
+    </mat-form-field>
+
+    <button mat-stroked-button (click)="showInactive.update(v => !v)">
+      <mat-icon>{{ showInactive() ? 'visibility_off' : 'visibility' }}</mat-icon>
+      {{ showInactive() ? 'Dölj inaktiva' : 'Visa inaktiva' }}
+    </button>
+  </div>
+
+  @if (filteredPlayers().length === 0) {
+    <div class="empty-state">
+      <mat-icon>group</mat-icon>
+      <p>{{ search() ? 'Inga spelare matchar sökningen' : 'Inga spelare ännu – lägg till din första!' }}</p>
+      @if (!search()) {
+        <button mat-flat-button color="primary" (click)="openAddDialog()">Lägg till spelare</button>
+      }
+    </div>
+  } @else {
+    <div class="players-grid">
+      @for (player of filteredPlayers(); track player.id) {
+        <mat-card class="player-card" [class.inactive]="!player.active" [routerLink]="['/spelare', player.id]">
+          <mat-card-content>
+            <div class="card-top">
+              <div class="avatar avatar-lg" [style.background]="player.active ? player.avatarColor : '#bbb'">
+                {{ getInitials(player.name) }}
+              </div>
+              @if (!player.active) {
+                <span class="inactive-badge">Slutat</span>
+              }
+              @if (player.jerseyNumber) {
+                <span class="jersey-badge">#{{ player.jerseyNumber }}</span>
+              }
+            </div>
+
+            <div class="player-name">{{ player.name }}</div>
+
+            @if (player.parentName) {
+              <div class="parent-info">
+                <mat-icon>person</mat-icon> {{ player.parentName }}
+              </div>
+            }
+
+            <div class="balance-section">
+              <span class="balance-label">Individuell kassa</span>
+              <span class="balance-amount"
+                    [class.balance-positive]="player.balance >= 0"
+                    [class.balance-negative]="player.balance < 0">
+                {{ player.balance | sek }}
+              </span>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      }
+    </div>
+  }
+</div>

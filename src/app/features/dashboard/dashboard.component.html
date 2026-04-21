@@ -1,0 +1,149 @@
+<div class="page-container">
+  <div class="page-header">
+    <h1>Dashboard</h1>
+    <div class="header-actions">
+      <button mat-stroked-button (click)="openIncomeDialog()">
+        <mat-icon>add</mat-icon> Intäkt
+      </button>
+      <button mat-stroked-button color="warn" (click)="openExpenseDialog()">
+        <mat-icon>remove</mat-icon> Utgift
+      </button>
+      <button mat-flat-button color="primary" (click)="openSaleDialog()">
+        <mat-icon>point_of_sale</mat-icon> Registrera försäljning
+      </button>
+    </div>
+  </div>
+
+  <!-- Stat cards -->
+  <div class="cards-grid">
+    <mat-card class="stat-card total-card">
+      <mat-card-content>
+        <div class="stat-row">
+          <div>
+            <div class="stat-label">Totalt (lag + spelare)</div>
+            <div class="stat-value total">{{ totalBalance() | sek }}</div>
+          </div>
+          <mat-icon class="stat-icon">account_balance_wallet</mat-icon>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card" routerLink="/lagkassa" style="cursor:pointer">
+      <mat-card-content>
+        <div class="stat-row">
+          <div>
+            <div class="stat-label">Lagkassa</div>
+            <div class="stat-value">{{ treasury.teamBalance() | sek }}</div>
+          </div>
+          <mat-icon class="stat-icon">account_balance</mat-icon>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card" routerLink="/spelare" style="cursor:pointer">
+      <mat-card-content>
+        <div class="stat-row">
+          <div>
+            <div class="stat-label">Spelarnas totalt</div>
+            <div class="stat-value">{{ treasury.totalPlayerBalance() | sek }}</div>
+          </div>
+          <mat-icon class="stat-icon">group</mat-icon>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card">
+      <mat-card-content>
+        <div class="stat-row">
+          <div>
+            <div class="stat-label">Aktiva spelare</div>
+            <div class="stat-value">{{ treasury.activePlayers().length }}</div>
+          </div>
+          <mat-icon class="stat-icon">sports_soccer</mat-icon>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div class="bottom-grid">
+    <!-- Top players -->
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Spelartoppen</mat-card-title>
+        <mat-card-subtitle>Individuella kassor</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        @if (topPlayers().length === 0) {
+          <div class="empty-state">
+            <mat-icon>group</mat-icon>
+            <p>Inga spelare än</p>
+          </div>
+        } @else {
+          <div class="player-list">
+            @for (player of topPlayers(); track player.id; let i = $index) {
+              <div class="player-row" [routerLink]="['/spelare', player.id]">
+                <div class="rank">{{ i + 1 }}</div>
+                <div class="avatar" [style.background]="player.avatarColor">
+                  {{ getInitials(player.name) }}
+                </div>
+                <div class="player-info">
+                  <span class="player-name">{{ player.name }}</span>
+                  @if (player.jerseyNumber) {
+                    <span class="jersey">#{{ player.jerseyNumber }}</span>
+                  }
+                </div>
+                <div class="player-balance" [class.balance-positive]="player.balance >= 0" [class.balance-negative]="player.balance < 0">
+                  {{ player.balance | sek }}
+                </div>
+              </div>
+            }
+          </div>
+          <div class="view-all">
+            <a mat-button color="primary" routerLink="/spelare">Visa alla spelare</a>
+          </div>
+        }
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Recent transactions -->
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Senaste transaktioner</mat-card-title>
+        <mat-card-subtitle>De 10 senaste händelserna</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        @if (treasury.recentTransactions().length === 0) {
+          <div class="empty-state">
+            <mat-icon>receipt_long</mat-icon>
+            <p>Inga transaktioner än</p>
+          </div>
+        } @else {
+          <div class="transaction-list">
+            @for (tx of treasury.recentTransactions(); track tx.id) {
+              <div class="transaction-item">
+                <div class="tx-icon" [class]="getTxClass(tx.type)">
+                  <mat-icon>{{ txIcon(tx.type) }}</mat-icon>
+                </div>
+                <div class="tx-info">
+                  <div class="tx-desc">{{ tx.description }}</div>
+                  <div class="tx-meta">
+                    {{ tx.date }}
+                    @if (tx.playerId) { · {{ getPlayerName(tx.playerId) }} }
+                  </div>
+                </div>
+                <div class="tx-amount"
+                     [class.balance-positive]="tx.type !== 'team_expense' && tx.type !== 'player_expense'"
+                     [class.balance-negative]="tx.type === 'team_expense' || tx.type === 'player_expense'">
+                  {{ tx.type === 'team_expense' || tx.type === 'player_expense' ? '-' : '+' }}{{ tx.amount | sek }}
+                </div>
+              </div>
+            }
+          </div>
+          <div class="view-all">
+            <a mat-button color="primary" routerLink="/transaktioner">Visa alla</a>
+          </div>
+        }
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

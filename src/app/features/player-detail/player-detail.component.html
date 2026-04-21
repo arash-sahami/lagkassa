@@ -1,0 +1,122 @@
+@if (player(); as p) {
+  <div class="page-container">
+    <div class="page-header">
+      <div class="back-row">
+        <a mat-icon-button routerLink="/spelare" matTooltip="Tillbaka">
+          <mat-icon>arrow_back</mat-icon>
+        </a>
+        <h1>{{ p.name }}</h1>
+        @if (!p.active) {
+          <span class="left-badge">Slutat {{ p.leaveDate }}</span>
+        }
+      </div>
+      @if (p.active) {
+        <div class="header-actions">
+          <button mat-stroked-button (click)="openIncomeDialog()">
+            <mat-icon>add</mat-icon> Intäkt
+          </button>
+          <button mat-stroked-button (click)="openExpenseDialog()">
+            <mat-icon>remove</mat-icon> Utgift
+          </button>
+          <button mat-stroked-button (click)="openEditDialog()">
+            <mat-icon>edit</mat-icon> Redigera
+          </button>
+          <button mat-flat-button color="warn" (click)="openLeaveDialog()">
+            <mat-icon>transfer_within_a_station</mat-icon> Lämnar laget
+          </button>
+        </div>
+      }
+    </div>
+
+    <div class="detail-grid">
+      <!-- Info card -->
+      <mat-card class="info-card">
+        <mat-card-content>
+          <div class="player-header">
+            <div class="avatar avatar-lg" [style.background]="p.active ? p.avatarColor : '#bbb'">
+              {{ getInitials(p.name) }}
+            </div>
+            <div class="player-meta">
+              @if (p.jerseyNumber) {
+                <div class="meta-row"><mat-icon>sports_soccer</mat-icon> #{{ p.jerseyNumber }}</div>
+              }
+              <div class="meta-row"><mat-icon>calendar_today</mat-icon> Med sedan {{ p.joinDate }}</div>
+              @if (p.parentName) {
+                <div class="meta-row"><mat-icon>person</mat-icon> {{ p.parentName }}</div>
+              }
+              @if (p.parentPhone) {
+                <div class="meta-row"><mat-icon>phone</mat-icon> {{ p.parentPhone }}</div>
+              }
+              @if (p.parentEmail) {
+                <div class="meta-row"><mat-icon>email</mat-icon> {{ p.parentEmail }}</div>
+              }
+              @if (p.notes) {
+                <div class="meta-row notes"><mat-icon>notes</mat-icon> {{ p.notes }}</div>
+              }
+            </div>
+          </div>
+
+          <mat-divider style="margin: 16px 0"></mat-divider>
+
+          <div class="balance-card" [class.negative]="balance() < 0">
+            <div class="bal-label">Individuell kassa</div>
+            <div class="bal-amount">{{ balance() | sek }}</div>
+          </div>
+
+          <div class="stats-row">
+            <div class="stat-item">
+              <span class="stat-num">{{ transactions().length }}</span>
+              <span class="stat-desc">Transaktioner</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-num">{{ sales().length }}</span>
+              <span class="stat-desc">Försäljningar</span>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Transactions -->
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Transaktioner</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          @if (transactions().length === 0) {
+            <div class="empty-state">
+              <mat-icon>receipt_long</mat-icon>
+              <p>Inga transaktioner ännu</p>
+            </div>
+          } @else {
+            <div class="transaction-list">
+              @for (tx of transactions(); track tx.id) {
+                <div class="transaction-item">
+                  <div class="tx-icon" [class]="getTxClass(tx.type)">
+                    <mat-icon>{{ txIcon(tx.type) }}</mat-icon>
+                  </div>
+                  <div class="tx-info">
+                    <div class="tx-desc">{{ tx.description }}</div>
+                    <div class="tx-meta">{{ tx.date }} · {{ txLabel(tx.type) }}</div>
+                  </div>
+                  <div class="tx-amount"
+                       [class.balance-positive]="tx.type !== 'player_expense'"
+                       [class.balance-negative]="tx.type === 'player_expense'">
+                    {{ tx.type === 'player_expense' ? '-' : '+' }}{{ tx.amount | sek }}
+                  </div>
+                </div>
+              }
+            </div>
+          }
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+} @else {
+  <div class="page-container">
+    <div class="empty-state">
+      <mat-icon>person_off</mat-icon>
+      <p>Spelare hittades inte</p>
+      <a mat-button color="primary" routerLink="/spelare">Tillbaka till spelare</a>
+    </div>
+  </div>
+}

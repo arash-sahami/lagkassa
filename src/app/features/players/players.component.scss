@@ -1,0 +1,112 @@
+.toolbar {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.search-field {
+  flex: 1;
+  min-width: 220px;
+  max-width: 400px;
+}
+
+.players-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.player-card {
+  cursor: pointer;
+  transition: box-shadow 0.2s, transform 0.15s;
+
+  &:hover {
+    box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+    transform: translateY(-2px);
+  }
+
+  &.inactive {
+    opacity: 0.6;
+    .player-name { color: #888; }
+  }
+
+  mat-card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-top: 16px !important;
+  }
+}
+
+.card-top {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 8px;
+
+  .inactive-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: #f44336;
+    color: white;
+    font-size: 0.7rem;
+    padding: 2px 7px;
+    border-radius: 10px;
+    font-weight: 600;
+  }
+
+  .jersey-badge {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: #1b5e20;
+    color: white;
+    font-size: 0.72rem;
+    padding: 2px 7px;
+    border-radius: 10px;
+    font-weight: 700;
+  }
+}
+
+.player-name {
+  font-size: 1rem;
+  font-weight: 600;
+  text-align: center;
+  color: #222;
+}
+
+.parent-info {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.78rem;
+  color: #888;
+  justify-content: center;
+
+  mat-icon { font-size: 14px; width: 14px; height: 14px; }
+}
+
+.balance-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 8px;
+  padding-top: 12px;
+  border-top: 1px solid #f0f0f0;
+
+  .balance-label {
+    font-size: 0.72rem;
+    color: #999;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
+  }
+
+  .balance-amount {
+    font-size: 1.3rem;
+    font-weight: 700;
+  }
+}

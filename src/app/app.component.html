@@ -1,0 +1,55 @@
+<mat-sidenav-container class="app-container">
+  <mat-sidenav
+    [mode]="sidenavMode()"
+    [opened]="sidenavOpened()"
+    (openedChange)="sidenavOpened.set($event)"
+    class="app-sidenav">
+
+    <div class="sidenav-header">
+      <div class="team-logo">
+        <mat-icon>sports_soccer</mat-icon>
+      </div>
+      <div class="team-info">
+        <span class="team-name">Lagkassan</span>
+        <span class="team-sub">P2012</span>
+      </div>
+    </div>
+
+    <mat-nav-list>
+      @for (item of navItems; track item.path) {
+        <a mat-list-item
+           [routerLink]="item.path"
+           routerLinkActive="active-link"
+           [routerLinkActiveOptions]="{ exact: item.path === '/dashboard' }">
+          <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+          <span matListItemTitle>{{ item.label }}</span>
+        </a>
+      }
+    </mat-nav-list>
+
+    <div class="sidenav-footer">
+      <div class="balance-summary">
+        <span class="bal-label">Lagkassa</span>
+        <span class="bal-value">{{ treasury.teamBalance() | number:'1.0-0' }} kr</span>
+      </div>
+      <div class="balance-summary">
+        <span class="bal-label">Spelare totalt</span>
+        <span class="bal-value">{{ treasury.totalPlayerBalance() | number:'1.0-0' }} kr</span>
+      </div>
+    </div>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <mat-toolbar color="primary" class="app-toolbar">
+      <button mat-icon-button (click)="toggleSidenav()" aria-label="Meny">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <span class="toolbar-spacer"></span>
+      <span class="toolbar-title">Lagkassan P2012</span>
+    </mat-toolbar>
+
+    <main class="main-content">
+      <router-outlet />
+    </main>
+  </mat-sidenav-content>
+</mat-sidenav-container>
