@@ -57,25 +57,35 @@
     flex: 1;
     padding-top: 8px;
 
+    // Tvinga vita Material-tokens i sidenaven
+    --mat-list-list-item-label-text-color: rgba(255,255,255,0.85);
+    --mat-list-list-item-supporting-text-color: rgba(255,255,255,0.6);
+    --mat-list-list-item-leading-icon-color: rgba(255,255,255,0.6);
+    --mat-list-list-item-hover-label-text-color: white;
+    --mat-list-list-item-hover-state-layer-color: rgba(255,255,255,0.1);
+    --mat-list-list-item-focus-state-layer-color: rgba(255,255,255,0.12);
+
     a[mat-list-item] {
-      color: rgba(255,255,255,0.8);
+      color: rgba(255,255,255,0.85) !important;
       border-radius: 8px;
       margin: 2px 8px;
       height: 48px;
 
-      mat-icon { color: rgba(255,255,255,0.6); }
+      mat-icon { color: rgba(255,255,255,0.6) !important; }
+
+      * { color: inherit !important; }
 
       &:hover {
         background: rgba(255,255,255,0.1);
-        color: white;
-        mat-icon { color: rgba(255,255,255,0.9); }
+        mat-icon { color: rgba(255,255,255,0.9) !important; }
       }
 
       &.active-link {
         background: var(--fif-purple);
-        color: white;
+        color: white !important;
         font-weight: 600;
-        mat-icon { color: #ce93d8; }
+        mat-icon { color: #e1bee7 !important; }
+        * { color: white !important; }
       }
     }
   }
@@ -100,17 +110,24 @@
 
 .app-toolbar {
   background: var(--fif-navy) !important;
+  color: white !important;
   box-shadow: 0 2px 8px rgba(0,0,0,0.3);
   position: sticky;
   top: 0;
   z-index: 100;
+
+  // Tvinga vita ikoner och text i toolbar
+  --mat-toolbar-container-text-color: white;
+  mat-icon { color: white !important; }
+  button { color: white !important; }
 
   .toolbar-spacer { flex: 1; }
 
   .toolbar-title {
     font-size: 1rem;
     font-weight: 500;
-    opacity: 0.85;
+    color: white;
+    opacity: 0.9;
   }
 }
 
