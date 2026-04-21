@@ -1,10 +1,21 @@
 @use '@angular/material' as mat;
 
+// Fässbergs IF – lila och marinblå
+$fassbergs-purple: (
+  50:  #f3e5f5, 100: #e1bee7, 200: #ce93d8, 300: #ba68c8,
+  400: #ab47bc, 500: #7b2d9e, 600: #6a1b9a, 700: #5b1488,
+  800: #4a0e76, 900: #1a1464,
+  contrast: (
+    50: #000, 100: #000, 200: #000, 300: #fff,
+    400: #fff, 500: #fff, 600: #fff, 700: #fff, 800: #fff, 900: #fff
+  )
+);
+
 $theme: mat.define-theme((
   color: (
     theme-type: light,
-    primary: mat.$green-palette,
-    tertiary: mat.$orange-palette,
+    primary: mat.$deep-purple-palette,
+    tertiary: mat.$purple-palette,
   ),
   typography: (
     brand-family: 'Roboto',
@@ -18,9 +29,15 @@ html {
   @include mat.color-variants-backwards-compatibility($theme);
 }
 
-*, *::before, *::after {
-  box-sizing: border-box;
+// Fässbergs brand colors
+:root {
+  --fif-navy:   #1a1464;
+  --fif-purple: #7b2d9e;
+  --fif-light:  #9c4dcc;
+  --fif-white:  #ffffff;
 }
+
+*, *::before, *::after { box-sizing: border-box; }
 
 body {
   margin: 0;
@@ -50,7 +67,7 @@ body {
     margin: 0;
     font-size: 1.8rem;
     font-weight: 500;
-    color: #1b5e20;
+    color: var(--fif-navy);
   }
 }
 
@@ -62,11 +79,7 @@ body {
 }
 
 .stat-card {
-  mat-card-content {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
+  mat-card-content { display: flex; flex-direction: column; gap: 4px; }
 
   .stat-label {
     font-size: 0.85rem;
@@ -79,13 +92,13 @@ body {
   .stat-value {
     font-size: 2rem;
     font-weight: 700;
-    color: #1b5e20;
+    color: var(--fif-navy);
     line-height: 1.2;
   }
 
   .stat-icon {
     font-size: 2.5rem;
-    color: #4caf50;
+    color: var(--fif-light);
     opacity: 0.8;
   }
 }
@@ -106,17 +119,9 @@ body {
   flex-shrink: 0;
 }
 
-.avatar-lg {
-  width: 64px;
-  height: 64px;
-  font-size: 1.5rem;
-}
+.avatar-lg { width: 64px; height: 64px; font-size: 1.5rem; }
 
-.transaction-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-}
+.transaction-list { display: flex; flex-direction: column; gap: 0; }
 
 .transaction-item {
   display: flex;
@@ -138,10 +143,10 @@ body {
 
     mat-icon { font-size: 18px; width: 18px; height: 18px; }
 
-    &.income { background: #e8f5e9; color: #2e7d32; }
-    &.expense { background: #ffebee; color: #c62828; }
-    &.sale { background: #e3f2fd; color: #1565c0; }
-    &.transfer { background: #fff3e0; color: #e65100; }
+    &.income   { background: #ede7f6; color: #6a1b9a; }
+    &.expense  { background: #ffebee; color: #c62828; }
+    &.sale     { background: #e8eaf6; color: #283593; }
+    &.transfer { background: #f3e5f5; color: #7b2d9e; }
   }
 
   .tx-info {
@@ -156,18 +161,10 @@ body {
       text-overflow: ellipsis;
     }
 
-    .tx-meta {
-      font-size: 0.78rem;
-      color: #888;
-      margin-top: 2px;
-    }
+    .tx-meta { font-size: 0.78rem; color: #888; margin-top: 2px; }
   }
 
-  .tx-amount {
-    font-weight: 700;
-    font-size: 0.95rem;
-    white-space: nowrap;
-  }
+  .tx-amount { font-weight: 700; font-size: 0.95rem; white-space: nowrap; }
 }
 
 .empty-state {
@@ -175,26 +172,9 @@ body {
   padding: 48px 24px;
   color: #aaa;
 
-  mat-icon {
-    font-size: 56px;
-    width: 56px;
-    height: 56px;
-    margin-bottom: 12px;
-    display: block;
-  }
-
-  p {
-    margin: 0;
-    font-size: 1rem;
-  }
+  mat-icon { font-size: 56px; width: 56px; height: 56px; margin-bottom: 12px; display: block; }
+  p { margin: 0; font-size: 1rem; }
 }
-
-mat-chip.cat-försäljning  { background: #e3f2fd !important; color: #1565c0 !important; }
-mat-chip.cat-cuper        { background: #fce4ec !important; color: #880e4f !important; }
-mat-chip.cat-utrustning   { background: #f3e5f5 !important; color: #6a1b9a !important; }
-mat-chip.cat-resor        { background: #fff8e1 !important; color: #f57f17 !important; }
-mat-chip.cat-träning      { background: #e8f5e9 !important; color: #1b5e20 !important; }
-mat-chip.cat-övrigt       { background: #f5f5f5 !important; color: #555 !important; }
 
 @media (max-width: 600px) {
   .page-container { padding: 16px; }

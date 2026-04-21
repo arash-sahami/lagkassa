@@ -55,29 +55,27 @@
 }
 
 .balance-card {
-  background: #e8f5e9;
+  background: linear-gradient(135deg, #1a1464, #7b2d9e);
   border-radius: 12px;
   padding: 16px;
   text-align: center;
   margin-bottom: 16px;
 
-  &.negative { background: #ffebee; }
+  &.negative { background: linear-gradient(135deg, #b71c1c, #e53935); }
 
   .bal-label {
     font-size: 0.78rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    color: #555;
+    color: rgba(255,255,255,0.7);
     margin-bottom: 4px;
   }
 
   .bal-amount {
     font-size: 2rem;
     font-weight: 700;
-    color: #2e7d32;
+    color: white;
   }
-
-  &.negative .bal-amount { color: #c62828; }
 }
 
 .stats-row {
@@ -91,7 +89,7 @@
       display: block;
       font-size: 1.4rem;
       font-weight: 700;
-      color: #1b5e20;
+      color: var(--fif-navy);
     }
 
     .stat-desc {

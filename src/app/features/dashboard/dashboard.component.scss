@@ -19,8 +19,8 @@
 .stat-value {
   font-size: 1.9rem;
   font-weight: 700;
-  color: #1b5e20;
-  &.total { color: #0d47a1; }
+  color: var(--fif-navy);
+  &.total { color: var(--fif-purple); }
 }
 
 .stat-label {
@@ -36,7 +36,7 @@
   font-size: 2.8rem;
   width: 2.8rem;
   height: 2.8rem;
-  color: #a5d6a7;
+  color: var(--fif-light);
   opacity: 0.8;
 }
 
