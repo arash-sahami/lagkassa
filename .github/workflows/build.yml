@@ -68,6 +68,9 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
+      - name: Copy index.html to 404.html for SPA routing
+        run: cp dist/lagkassa/browser/index.html dist/lagkassa/browser/404.html
+
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
