@@ -6,6 +6,7 @@
   color: white;
   display: flex;
   flex-direction: column;
+  overflow-x: hidden;
 
   .sidenav-header {
     display: flex;
@@ -67,9 +68,11 @@
 
     a[mat-list-item] {
       color: rgba(255,255,255,0.85) !important;
-      border-radius: 8px;
-      margin: 2px 8px;
+      border-radius: 0;
+      margin: 2px 0;
       height: 48px;
+      width: calc(100% - 16px);
+      box-sizing: border-box;
 
       mat-icon { color: rgba(255,255,255,0.6) !important; }
 

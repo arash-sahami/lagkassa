@@ -39,6 +39,28 @@ html {
 
 *, *::before, *::after { box-sizing: border-box; }
 
+// Ta bort alla gap/shadow/border runt sidenaven
+mat-sidenav-container,
+.mat-drawer-container {
+  --mat-sidenav-container-divider-color: transparent;
+  background-color: var(--fif-navy) !important;
+}
+
+mat-sidenav,
+.mat-drawer {
+  box-shadow: none !important;
+  border-right: none !important;
+}
+
+.mat-drawer-inner-container {
+  overflow-x: hidden;
+}
+
+mat-sidenav-content,
+.mat-drawer-content {
+  background-color: #f5f5f5;
+}
+
 body {
   margin: 0;
   font-family: 'Roboto', sans-serif;
