@@ -1,0 +1,115 @@
+<div class="login-page">
+  <mat-card class="login-card">
+    <div class="logo-header">
+      <img src="assets/fassbergs-if-logo.png" alt="Fässbergs IF" class="club-logo" />
+      <h1>Lagkassa P2012</h1>
+      <p class="subtitle">Fässbergs IF</p>
+    </div>
+
+    @if (!showReset()) {
+      <!-- Login form -->
+      <mat-card-content>
+        <form [formGroup]="form" (ngSubmit)="login()">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>E-post</mat-label>
+            <input matInput formControlName="email" type="email" autocomplete="email" />
+            <mat-icon matPrefix>email</mat-icon>
+            @if (form.get('email')?.hasError('required') && form.get('email')?.touched) {
+              <mat-error>E-post krävs</mat-error>
+            } @else if (form.get('email')?.hasError('email') && form.get('email')?.touched) {
+              <mat-error>Ogiltig e-postadress</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Lösenord</mat-label>
+            <input matInput formControlName="password"
+                   [type]="showPassword() ? 'text' : 'password'"
+                   autocomplete="current-password" />
+            <mat-icon matPrefix>lock</mat-icon>
+            <button mat-icon-button matSuffix type="button"
+                    (click)="showPassword.set(!showPassword())"
+                    [attr.aria-label]="showPassword() ? 'Dölj lösenord' : 'Visa lösenord'">
+              <mat-icon>{{ showPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+            @if (form.get('password')?.hasError('required') && form.get('password')?.touched) {
+              <mat-error>Lösenord krävs</mat-error>
+            }
+          </mat-form-field>
+
+          @if (errorMsg()) {
+            <div class="error-banner">
+              <mat-icon>error_outline</mat-icon>
+              <span>{{ errorMsg() }}</span>
+            </div>
+          }
+
+          <button mat-raised-button color="primary" type="submit"
+                  class="full-width submit-btn" [disabled]="loading()">
+            @if (loading()) {
+              <mat-spinner diameter="20" />
+            } @else {
+              <ng-container><mat-icon>login</mat-icon> Logga in</ng-container>
+            }
+          </button>
+        </form>
+
+        <div class="forgot-link">
+          <button mat-button type="button" (click)="showReset.set(true)">
+            Glömt lösenord?
+          </button>
+        </div>
+      </mat-card-content>
+    } @else {
+      <!-- Password reset form -->
+      <mat-card-content>
+        @if (!resetSent()) {
+          <p class="reset-info">
+            Ange din e-postadress så skickar vi en länk för att återställa lösenordet.
+          </p>
+          <form [formGroup]="resetForm" (ngSubmit)="sendReset()">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>E-post</mat-label>
+              <input matInput formControlName="email" type="email" autocomplete="email" />
+              <mat-icon matPrefix>email</mat-icon>
+              @if (resetForm.get('email')?.hasError('required') && resetForm.get('email')?.touched) {
+                <mat-error>E-post krävs</mat-error>
+              } @else if (resetForm.get('email')?.hasError('email') && resetForm.get('email')?.touched) {
+                <mat-error>Ogiltig e-postadress</mat-error>
+              }
+            </mat-form-field>
+
+            @if (errorMsg()) {
+              <div class="error-banner">
+                <mat-icon>error_outline</mat-icon>
+                <span>{{ errorMsg() }}</span>
+              </div>
+            }
+
+            <button mat-raised-button color="primary" type="submit"
+                    class="full-width submit-btn" [disabled]="loading()">
+              @if (loading()) {
+                <mat-spinner diameter="20" />
+              } @else {
+                <ng-container><mat-icon>send</mat-icon> Skicka återställningslänk</ng-container>
+              }
+            </button>
+          </form>
+        } @else {
+          <div class="success-banner">
+            <mat-icon>mark_email_read</mat-icon>
+            <p>Återställningslänk skickad! Kontrollera din e-post.</p>
+          </div>
+        }
+
+        <div class="forgot-link">
+          <button mat-button type="button"
+                  (click)="showReset.set(false); resetSent.set(false); errorMsg.set('')">
+            <mat-icon>arrow_back</mat-icon>
+            Tillbaka till inloggning
+          </button>
+        </div>
+      </mat-card-content>
+    }
+  </mat-card>
+</div>

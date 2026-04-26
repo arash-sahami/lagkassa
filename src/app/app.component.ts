@@ -6,10 +6,12 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { filter } from 'rxjs/operators';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { TreasuryService } from './core/services/treasury.service';
+import { AuthService } from './core/services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -17,7 +19,7 @@ import { TreasuryService } from './core/services/treasury.service';
   imports: [
     RouterOutlet, RouterLink, RouterLinkActive,
     MatToolbarModule, MatSidenavModule, MatListModule,
-    MatIconModule, MatButtonModule, DecimalPipe,
+    MatIconModule, MatButtonModule, MatTooltipModule, DecimalPipe,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
@@ -26,6 +28,7 @@ export class AppComponent {
   private readonly breakpoint = inject(BreakpointObserver);
   private readonly router = inject(Router);
   readonly treasury = inject(TreasuryService);
+  readonly auth = inject(AuthService);
 
   readonly isMobile = toSignal(
     this.breakpoint.observe([Breakpoints.Handset]),
@@ -34,6 +37,7 @@ export class AppComponent {
 
   readonly sidenavOpened = signal(true);
   readonly sidenavMode = computed(() => this.isMobile().matches ? 'over' : 'side');
+  readonly isLoggedIn = computed(() => this.auth.currentUser() != null && this.auth.currentUser() !== undefined);
 
   readonly navItems = [
     { path: '/dashboard',     icon: 'dashboard',       label: 'Dashboard' },
@@ -57,5 +61,10 @@ export class AppComponent {
 
   toggleSidenav() {
     this.sidenavOpened.update(v => !v);
+  }
+
+  async logout() {
+    await this.auth.logout();
+    this.router.navigate(['/login']);
   }
 }
