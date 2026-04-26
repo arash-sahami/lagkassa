@@ -1,6 +1,9 @@
 import { Injectable, signal, computed, effect, inject } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
+import { filter, take } from 'rxjs';
 import { FirestoreService } from './firestore.service';
 import { StorageService, AppData } from './storage.service';
+import { AuthService } from './auth.service';
 import { Player, AVATAR_COLORS } from '../models/player.model';
 import { Transaction, TransactionType, TransactionCategory, isTeamTransaction } from '../models/transaction.model';
 import { Sale } from '../models/sale.model';
@@ -13,6 +16,7 @@ function defaultData(): AppData {
 export class TreasuryService {
   private readonly firestore = inject(FirestoreService);
   private readonly localStorage = inject(StorageService);
+  private readonly authService = inject(AuthService);
 
   readonly loading = signal(true);
   readonly error   = signal<string | null>(null);
@@ -55,7 +59,11 @@ export class TreasuryService {
   );
 
   constructor() {
-    this.initLoad();
+    // Wait until Firebase auth has resolved and a user is signed in before loading
+    toObservable(this.authService.currentUser).pipe(
+      filter(user => user !== undefined && user !== null),
+      take(1),
+    ).subscribe(() => this.initLoad());
 
     // Auto-save to Firestore (debounced) whenever data changes
     effect(() => {
