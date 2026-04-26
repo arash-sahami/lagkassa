@@ -16,6 +16,8 @@ export class FirestoreService {
   }
 
   async save(data: AppData): Promise<void> {
-    await setDoc(this.ref, data);
+    // Firestore rejects undefined values – strip them via JSON round-trip
+    const clean = JSON.parse(JSON.stringify(data));
+    await setDoc(this.ref, clean);
   }
 }
