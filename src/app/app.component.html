@@ -47,10 +47,29 @@
       </button>
       <span class="toolbar-spacer"></span>
       <span class="toolbar-title">Lagkassan P2012</span>
+      @if (treasury.loading()) {
+        <mat-icon class="sync-icon">sync</mat-icon>
+      }
     </mat-toolbar>
 
+    @if (treasury.error()) {
+      <div class="error-banner">
+        <mat-icon>cloud_off</mat-icon>
+        {{ treasury.error() }}
+      </div>
+    }
+
     <main class="main-content">
-      <router-outlet />
+      @if (treasury.loading()) {
+        <div class="loading-overlay">
+          <div class="loading-card">
+            <div class="spinner"></div>
+            <p>Laddar lagkassan...</p>
+          </div>
+        </div>
+      } @else {
+        <router-outlet />
+      }
     </main>
   </mat-sidenav-content>
 </mat-sidenav-container>

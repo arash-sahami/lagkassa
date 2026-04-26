@@ -1,30 +1,39 @@
-import { Injectable, signal, computed, inject } from '@angular/core';
+import { Injectable, signal, computed, effect, inject } from '@angular/core';
+import { FirestoreService } from './firestore.service';
 import { StorageService, AppData } from './storage.service';
 import { Player, AVATAR_COLORS } from '../models/player.model';
 import { Transaction, TransactionType, TransactionCategory, isTeamTransaction } from '../models/transaction.model';
 import { Sale } from '../models/sale.model';
 
+function defaultData(): AppData {
+  return { players: [], transactions: [], sales: [], teamName: 'P2012', season: '2025/2026' };
+}
+
 @Injectable({ providedIn: 'root' })
 export class TreasuryService {
-  private readonly storage = inject(StorageService);
-  private readonly _data = signal<AppData>(this.storage.load());
+  private readonly firestore = inject(FirestoreService);
+  private readonly localStorage = inject(StorageService);
+
+  readonly loading = signal(true);
+  readonly error   = signal<string | null>(null);
+
+  private readonly _data = signal<AppData>(defaultData());
+  private isLoading = true;
+  private saveTimer: ReturnType<typeof setTimeout> | null = null;
 
   // ── Derived state ──────────────────────────────────────────────
-  readonly players = computed(() => this._data().players);
-  readonly activePlayers = computed(() => this._data().players.filter(p => p.active));
+  readonly players         = computed(() => this._data().players);
+  readonly activePlayers   = computed(() => this._data().players.filter(p => p.active));
   readonly inactivePlayers = computed(() => this._data().players.filter(p => !p.active));
-  readonly transactions = computed(() => this._data().transactions);
-  readonly sales = computed(() => this._data().sales);
-  readonly teamName = computed(() => this._data().teamName);
-  readonly season = computed(() => this._data().season);
+  readonly transactions    = computed(() => this._data().transactions);
+  readonly sales           = computed(() => this._data().sales);
+  readonly teamName        = computed(() => this._data().teamName);
+  readonly season          = computed(() => this._data().season);
 
   readonly teamBalance = computed(() =>
     this._data().transactions
       .filter(t => isTeamTransaction(t.type))
-      .reduce((sum, t) => {
-        if (t.type === 'team_expense') return sum - t.amount;
-        return sum + t.amount;
-      }, 0)
+      .reduce((sum, t) => t.type === 'team_expense' ? sum - t.amount : sum + t.amount, 0)
   );
 
   readonly totalPlayerBalance = computed(() =>
@@ -44,6 +53,18 @@ export class TreasuryService {
       .filter(t => isTeamTransaction(t.type))
       .sort((a, b) => b.date.localeCompare(a.date))
   );
+
+  constructor() {
+    this.initLoad();
+
+    // Auto-save to Firestore (debounced) whenever data changes
+    effect(() => {
+      const data = this._data();
+      if (!this.isLoading) {
+        this.scheduleSave(data);
+      }
+    });
+  }
 
   // ── Player helpers ─────────────────────────────────────────────
   getPlayer(id: string): Player | undefined {
@@ -94,13 +115,12 @@ export class TreasuryService {
 
   playerLeaves(playerId: string): void {
     const balance = this.getPlayerBalance(playerId);
-    const player = this.getPlayer(playerId);
+    const player  = this.getPlayer(playerId);
     if (!player) return;
 
-    const transactions: Transaction[] = [];
-
+    const newTransactions: Transaction[] = [];
     if (balance > 0) {
-      transactions.push(this.makeTransaction({
+      newTransactions.push(this.makeTransaction({
         type: 'player_exit',
         amount: balance,
         description: `Överföring från ${player.name} (lämnade laget)`,
@@ -117,27 +137,21 @@ export class TreasuryService {
           ? { ...p, active: false, leaveDate: new Date().toISOString().slice(0, 10) }
           : p
       ),
-      transactions: [...d.transactions, ...transactions],
+      transactions: [...d.transactions, ...newTransactions],
     }));
   }
 
   // ── Sales ──────────────────────────────────────────────────────
   registerSale(input: {
-    date: string;
-    productName: string;
-    quantity: number;
-    pricePerUnit: number;
-    costPerUnit: number;
-    playerId?: string;
-    description?: string;
+    date: string; productName: string; quantity: number;
+    pricePerUnit: number; costPerUnit: number; playerId?: string; description?: string;
   }): void {
     const totalRevenue = input.quantity * input.pricePerUnit;
-    const totalCost = input.quantity * input.costPerUnit;
-    const totalProfit = totalRevenue - totalCost;
-    const playerShare = input.playerId ? Math.round(totalProfit * 0.5 * 100) / 100 : 0;
-    const teamShare = Math.round((totalProfit - playerShare) * 100) / 100;
-
-    const playerName = input.playerId ? this.getPlayer(input.playerId)?.name : undefined;
+    const totalCost    = input.quantity * input.costPerUnit;
+    const totalProfit  = totalRevenue - totalCost;
+    const playerShare  = input.playerId ? Math.round(totalProfit * 0.5 * 100) / 100 : 0;
+    const teamShare    = Math.round((totalProfit - playerShare) * 100) / 100;
+    const playerName   = input.playerId ? this.getPlayer(input.playerId)?.name : undefined;
 
     const sale: Sale = {
       id: crypto.randomUUID(),
@@ -146,11 +160,8 @@ export class TreasuryService {
       quantity: input.quantity,
       pricePerUnit: input.pricePerUnit,
       costPerUnit: input.costPerUnit,
-      totalRevenue,
-      totalCost,
-      totalProfit,
-      teamShare,
-      playerShare,
+      totalRevenue, totalCost, totalProfit,
+      teamShare, playerShare,
       playerId: input.playerId,
       playerName,
       description: input.description,
@@ -216,22 +227,43 @@ export class TreasuryService {
     this.update(d => ({ ...d, transactions: d.transactions.filter(t => t.id !== id) }));
   }
 
-  // ── Settings ───────────────────────────────────────────────────
   updateSettings(teamName: string, season: string): void {
     this.update(d => ({ ...d, teamName, season }));
   }
 
-  exportData(): void {
-    this.storage.exportJson(this._data());
-  }
-
-  async importData(file: File): Promise<void> {
-    const data = await this.storage.importJson(file);
-    this._data.set(data);
-    this.storage.save(data);
-  }
-
   // ── Private helpers ────────────────────────────────────────────
+  private async initLoad(): Promise<void> {
+    try {
+      const data = await this.firestore.load();
+      if (data) {
+        this._data.set(data);
+      } else {
+        // First run — migrate from localStorage if data exists
+        const local = this.localStorage.load();
+        if (local.players.length > 0 || local.transactions.length > 0) {
+          this._data.set(local);
+          await this.firestore.save(local);
+        }
+      }
+    } catch (e) {
+      console.error('Firestore load failed:', e);
+      this.error.set('Kunde inte ansluta till databasen. Kontrollera internetanslutningen.');
+    } finally {
+      this.isLoading = false;
+      this.loading.set(false);
+    }
+  }
+
+  private scheduleSave(data: AppData): void {
+    if (this.saveTimer) clearTimeout(this.saveTimer);
+    this.saveTimer = setTimeout(() => {
+      this.firestore.save(data).catch(err => {
+        console.error('Firestore save failed:', err);
+        this.error.set('Kunde inte spara till databasen.');
+      });
+    }, 800);
+  }
+
   private addTx(opts: Omit<Transaction, 'id' | 'createdAt'>): void {
     this.update(d => ({
       ...d,
@@ -245,6 +277,5 @@ export class TreasuryService {
 
   private update(fn: (d: AppData) => AppData): void {
     this._data.update(fn);
-    this.storage.save(this._data());
   }
 }
