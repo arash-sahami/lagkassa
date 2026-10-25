@@ -239,20 +239,21 @@ export class TreasuryService {
     this.update(d => ({ ...d, teamName, season }));
   }
 
+  // ── Backup ─────────────────────────────────────────────────────
+  exportBackup(): void {
+    this.localStorage.exportJson(this._data());
+  }
+
+  async importBackup(file: File): Promise<void> {
+    const data = await this.localStorage.importJson(file);
+    this._data.set(data);
+  }
+
   // ── Private helpers ────────────────────────────────────────────
   private async initLoad(): Promise<void> {
     try {
       const data = await this.firestore.load();
-      if (data) {
-        this._data.set(data);
-      } else {
-        // First run — migrate from localStorage if data exists
-        const local = this.localStorage.load();
-        if (local.players.length > 0 || local.transactions.length > 0) {
-          this._data.set(local);
-          await this.firestore.save(local);
-        }
-      }
+      if (data) this._data.set(data);
     } catch (e) {
       console.error('Firestore load failed:', e);
       this.error.set('Kunde inte ansluta till databasen. Kontrollera internetanslutningen.');

@@ -38,6 +38,16 @@
           <span class="bal-label">Spelare totalt</span>
           <span class="bal-value">{{ treasury.totalPlayerBalance() | number:'1.0-0' }} kr</span>
         </div>
+        <div class="backup-row">
+          <button mat-stroked-button (click)="treasury.exportBackup()">
+            <mat-icon>download</mat-icon> Exportera backup
+          </button>
+          <button mat-stroked-button (click)="backupInput.click()">
+            <mat-icon>upload</mat-icon> Importera backup
+          </button>
+          <input #backupInput type="file" accept="application/json,.json" hidden
+                 (change)="importBackup($event)">
+        </div>
         <div class="user-row">
           <mat-icon class="user-icon">person</mat-icon>
           <span class="user-email">{{ auth.currentUser()?.email }}</span>

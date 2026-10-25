@@ -11,22 +11,9 @@ export interface AppData {
   season: string;
 }
 
-const STORAGE_KEY = 'lagkassa_v1';
-
+/** JSON file backup export/import. */
 @Injectable({ providedIn: 'root' })
 export class StorageService {
-  load(): AppData {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) return JSON.parse(raw) as AppData;
-    } catch { /* ignore */ }
-    return { players: [], transactions: [], sales: [], teamName: 'P2012', season: '2025/2026' };
-  }
-
-  save(data: AppData): void {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-  }
-
   exportJson(data: AppData): void {
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
@@ -42,7 +29,17 @@ export class StorageService {
       const reader = new FileReader();
       reader.onload = e => {
         try {
-          resolve(JSON.parse(e.target!.result as string) as AppData);
+          const parsed = JSON.parse(e.target!.result as string);
+          if (!Array.isArray(parsed?.players) || !Array.isArray(parsed?.transactions) || !Array.isArray(parsed?.sales)) {
+            throw new Error('Ogiltig fil');
+          }
+          resolve({
+            players: parsed.players,
+            transactions: parsed.transactions,
+            sales: parsed.sales,
+            teamName: parsed.teamName ?? 'P2012',
+            season: parsed.season ?? '2025/2026',
+          });
         } catch {
           reject(new Error('Ogiltig fil'));
         }

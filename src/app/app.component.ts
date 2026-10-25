@@ -9,6 +9,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { filter } from 'rxjs/operators';
+import { firstValueFrom } from 'rxjs';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { ConfirmDialogComponent } from './shared/dialogs/confirm-dialog.component';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { TreasuryService } from './core/services/treasury.service';
 import { AuthService } from './core/services/auth.service';
@@ -29,6 +33,8 @@ export class AppComponent {
   private readonly router = inject(Router);
   readonly treasury = inject(TreasuryService);
   readonly auth = inject(AuthService);
+  private readonly dialog = inject(MatDialog);
+  private readonly snackbar = inject(MatSnackBar);
 
   readonly isMobile = toSignal(
     this.breakpoint.observe([Breakpoints.Handset]),
@@ -61,6 +67,31 @@ export class AppComponent {
 
   toggleSidenav() {
     this.sidenavOpened.update(v => !v);
+  }
+
+  async importBackup(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    input.value = '';
+    if (!file) return;
+
+    const confirmed = await firstValueFrom(this.dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: 'Importera backup',
+        message: `All nuvarande data ersätts med innehållet i "${file.name}". Det går inte att ångra. Exportera en backup först om du är osäker.`,
+        confirmText: 'Ersätt data',
+        confirmColor: 'warn',
+        icon: 'warning',
+      },
+    }).afterClosed());
+    if (!confirmed) return;
+
+    try {
+      await this.treasury.importBackup(file);
+      this.snackbar.open('Backup importerad', 'OK', { duration: 3000 });
+    } catch (e) {
+      this.snackbar.open((e as Error).message || 'Kunde inte importera filen', 'OK', { duration: 4000 });
+    }
   }
 
   async logout() {

@@ -100,6 +100,15 @@
     flex-direction: column;
     gap: 6px;
 
+    .backup-row {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin: 8px 0;
+
+      button { color: rgba(255,255,255,0.8); border-color: rgba(255,255,255,0.3); }
+    }
+
     .balance-summary {
       display: flex;
       justify-content: space-between;
