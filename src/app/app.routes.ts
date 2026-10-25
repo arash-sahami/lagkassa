@@ -9,6 +9,11 @@ export const routes: Routes = [
     title: 'Logga in – Lagkassan',
   },
   {
+    path: 'registrera',
+    loadComponent: () => import('./features/register/register.component').then(m => m.RegisterComponent),
+    title: 'Skapa konto – Lagkassan',
+  },
+  {
     path: 'dashboard',
     loadComponent: () => import('./features/dashboard/dashboard.component').then(m => m.DashboardComponent),
     title: 'Dashboard – Lagkassan',

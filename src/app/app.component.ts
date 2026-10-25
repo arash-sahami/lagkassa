@@ -69,6 +69,12 @@ export class AppComponent {
     this.sidenavOpened.update(v => !v);
   }
 
+  async invite() {
+    // Lazy-loaded so the QR library isn't part of the initial bundle
+    const { InviteDialogComponent } = await import('./shared/dialogs/invite-dialog.component');
+    this.dialog.open(InviteDialogComponent, { width: '360px', maxWidth: '95vw' });
+  }
+
   async importBackup(event: Event) {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];

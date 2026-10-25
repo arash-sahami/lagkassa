@@ -2,9 +2,47 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Only authenticated users can access the lagkassa collection
+    function isAdmin() {
+      return request.auth != null
+        && exists(/databases/$(database)/documents/lagkassa_admins/$(request.auth.uid));
+    }
+
+    function invitation(token) {
+      return /databases/$(database)/documents/lagkassa_invitations/$(token);
+    }
+
+    // Treasury data – admins only
     match /lagkassa/{docId} {
-      allow read, write: if request.auth != null;
+      allow read, write: if isAdmin();
+    }
+
+    // Admin list. A user can add themselves only by consuming a valid
+    // invitation in the same batch (see InvitationService.register).
+    match /lagkassa_admins/{uid} {
+      allow get: if request.auth != null && (request.auth.uid == uid || isAdmin());
+      allow create: if request.auth != null
+        && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['email', 'invitation', 'createdAt'])
+        && get(invitation(request.resource.data.invitation)).data.used == false
+        && get(invitation(request.resource.data.invitation)).data.expiresAt > request.time
+        && getAfter(invitation(request.resource.data.invitation)).data.usedBy == uid;
+    }
+
+    // One-time invitations. The token (document id) is the secret,
+    // so anyone may fetch a single invitation by id but never list them.
+    match /lagkassa_invitations/{token} {
+      allow get: if true;
+      allow create: if isAdmin()
+        && request.resource.data.createdBy == request.auth.uid
+        && request.resource.data.used == false;
+      allow update: if request.auth != null
+        && resource.data.used == false
+        && resource.data.expiresAt > request.time
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['used', 'usedBy', 'usedAt'])
+        && request.resource.data.used == true
+        && request.resource.data.usedBy == request.auth.uid
+        && existsAfter(/databases/$(database)/documents/lagkassa_admins/$(request.auth.uid));
+      allow delete: if isAdmin();
     }
 
     // Block everything else
