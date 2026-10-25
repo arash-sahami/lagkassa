@@ -11,6 +11,7 @@ The UI is in Swedish.
 - **Lagkassa (Team treasury)** – team income and expenses, by category (försäljning, cuper, utrustning, resor, träning, övrigt).
 - **Försäljning (Sales)** – register a sale with quantity, price and cost. Profit is split automatically: if the sale is credited to a player, 50 % goes to the player and 50 % to the team; otherwise 100 % goes to the team.
 - **Transaktioner (Transactions)** – full ledger of all transactions.
+- **Hjälp (Help)** – explains the treasury rules agreed at the parents' meeting and step-by-step guides for each page.
 - **Login** – e-mail/password authentication with password reset. All routes except `/login` and `/registrera` are protected by an auth guard.
 - **Invite administrators via QR code** – *Bjud in administratör* in the sidebar creates a one-time invitation (valid 7 days) and shows a QR code / link to `/registrera?token=…`, where the invitee creates an account and chooses a password. No e-mail sending or backend functions needed.
 - **Backup** – *Exportera backup* / *Importera backup* buttons in the sidebar download/restore all data as a JSON file. Import validates the file and asks for confirmation before replacing the current data (which is then saved to Firestore).

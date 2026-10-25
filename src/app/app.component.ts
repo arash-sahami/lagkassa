@@ -51,6 +51,7 @@ export class AppComponent {
     { path: '/lagkassa',      icon: 'account_balance', label: 'Lagkassa' },
     { path: '/forsaljning',   icon: 'point_of_sale',   label: 'Försäljning' },
     { path: '/transaktioner', icon: 'receipt_long',    label: 'Transaktioner' },
+    { path: '/hjalp',         icon: 'help_outline',    label: 'Hjälp' },
   ];
 
   constructor() {

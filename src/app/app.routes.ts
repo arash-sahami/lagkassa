@@ -49,5 +49,11 @@ export const routes: Routes = [
     title: 'Transaktioner – Lagkassan',
     canActivate: [authGuard],
   },
+  {
+    path: 'hjalp',
+    loadComponent: () => import('./features/help/help.component').then(m => m.HelpComponent),
+    title: 'Hjälp – Lagkassan',
+    canActivate: [authGuard],
+  },
   { path: '**', redirectTo: 'dashboard' },
 ];

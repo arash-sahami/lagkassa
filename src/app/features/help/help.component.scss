@@ -1,0 +1,61 @@
+.help {
+  max-width: 900px;
+  line-height: 1.55;
+}
+
+.intro {
+  margin-bottom: 24px;
+
+  .intro-icon {
+    color: #7b2d9e;
+    font-size: 32px;
+    width: 32px;
+    height: 32px;
+  }
+}
+
+.rules {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 16px 0;
+
+  .rule {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+
+    mat-icon { color: #1a1464; flex-shrink: 0; margin-top: 2px; }
+  }
+}
+
+.example {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  background: #f3e5f5;
+  color: #4a148c;
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-top: 8px;
+
+  mat-icon { flex-shrink: 0; }
+}
+
+.section-title {
+  margin: 8px 0 12px;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+mat-panel-title mat-icon {
+  margin-right: 10px;
+  color: #7b2d9e;
+}
+
+.muted { color: rgba(0, 0, 0, 0.6); }
+
+.footer {
+  text-align: center;
+  margin-top: 24px;
+}
