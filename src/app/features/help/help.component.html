@@ -1,0 +1,321 @@
+<div class="page-container help">
+  <div class="page-header">
+    <h1>Hjälp</h1>
+  </div>
+
+  <!-- ── Principles (from the parents' meeting) ───────────────── -->
+  <mat-card class="intro">
+    <mat-card-header>
+      <mat-icon mat-card-avatar class="intro-icon">info</mat-icon>
+      <mat-card-title>Så fungerar lagkassan</mat-card-title>
+      <mat-card-subtitle
+        >Det vi kom överens om på föräldraträffen</mat-card-subtitle
+      >
+    </mat-card-header>
+    <mat-card-content>
+      <p>
+        Vi håller koll på två sorters kassor: <strong>lagkassan</strong>, som är
+        gemensam för hela laget, och en <strong>individuell kassa</strong> för
+        varje spelare. Målet är en rättvisare fördelning av pengar från
+        aktiviteter där varje spelare själv kan påverka hur mycket som säljs.
+      </p>
+
+      <div class="rules">
+        <div class="rule">
+          <mat-icon>sell</mat-icon>
+          <div>
+            <strong>Individuella säljaktiviteter</strong> (Newbody, Kakservice
+            m.m.)<br />
+            Vinsten delas – hälften till lagkassan och hälften till spelarens
+            egen kassa.
+          </div>
+        </div>
+        <div class="rule">
+          <mat-icon>groups</mat-icon>
+          <div>
+            <strong>Gemensamma lagaktiviteter</strong><br />
+            Allt går till lagkassan.
+          </div>
+        </div>
+        <div class="rule">
+          <mat-icon>emoji_events</mat-icon>
+          <div>
+            <strong>Användning av den individuella kassan</strong><br />
+            T.ex. kostnader vid cuper. Står spelarna själva för maten på en cup
+            kan man välja att ta pengarna från sin egen kassa eller betala på
+            annat sätt. Ledarna beslutar om upplägget från gång till gång.
+          </div>
+        </div>
+        <div class="rule">
+          <mat-icon>transfer_within_a_station</mat-icon>
+          <div>
+            <strong>Om en spelare lämnar laget</strong><br />
+            Spelarens individuella kassa förs över till lagkassan.
+          </div>
+        </div>
+        <div class="rule">
+          <mat-icon>account_balance</mat-icon>
+          <div>
+            <strong>Den kassa vi hade från början</strong><br />
+            Räknas som lagkassa.
+          </div>
+        </div>
+      </div>
+
+      <div class="example">
+        <mat-icon>lightbulb</mat-icon>
+        <span>
+          <strong>Exempel:</strong> Liam säljer lotter för 100 kr. 50 kr går
+          till lagkassan och 50 kr till Liams egen kassa.
+        </span>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- ── How-to guides ─────────────────────────────────────────── -->
+  <h2 class="section-title">Så gör du</h2>
+
+  <mat-accordion multi>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title
+          ><mat-icon>dashboard</mat-icon> Översikt</mat-panel-title
+        >
+      </mat-expansion-panel-header>
+      <p><a routerLink="/dashboard">Dashboard</a> visar läget just nu:</p>
+      <ul>
+        <li>
+          <strong>Totalt (lag + spelare)</strong> – alla pengar sammanlagt.
+        </li>
+        <li><strong>Lagkassa</strong> – lagets gemensamma pengar.</li>
+        <li>
+          <strong>Spelarnas totalt</strong> – summan av alla individuella
+          kassor.
+        </li>
+        <li><strong>Aktiva spelare</strong> – antal spelare i laget.</li>
+      </ul>
+      <p>
+        Under <em>Spelartoppen</em> syns spelarnas individuella kassor och under
+        <em>Senaste transaktioner</em> de tio senaste händelserna. Knapparna
+        <strong>+ Intäkt</strong>, <strong>− Utgift</strong> och
+        <strong>Registrera försäljning</strong> uppe till höger är genvägar.
+      </p>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title
+          ><mat-icon>point_of_sale</mat-icon> Registrera
+          försäljning</mat-panel-title
+        >
+      </mat-expansion-panel-header>
+      <p>
+        Använd detta för säljaktiviteter som Newbody, Kakservice och lotter.
+      </p>
+      <ol>
+        <li>
+          Klicka <strong>Registrera försäljning</strong> (på Dashboard eller
+          under <a routerLink="/forsaljning">Försäljning</a>).
+        </li>
+        <li>
+          Fyll i <strong>Produkt</strong>, <strong>Datum</strong>,
+          <strong>Antal</strong> och <strong>Pris per st</strong>.
+        </li>
+        <li>
+          Fyll i <strong>Kostnad per st</strong> (inköpspris), eller 0 om det
+          inte finns några kostnader.
+        </li>
+        <li>
+          Välj spelare under <strong>Tilldela spelare</strong> om det är en
+          individuell försäljning.
+        </li>
+        <li>
+          Kontrollera <strong>Beräkningen</strong> och klicka
+          <strong>Registrera</strong>.
+        </li>
+      </ol>
+      <p>
+        Det är <strong>vinsten</strong> (intäkt minus kostnad) som delas. Med en
+        spelare vald delas vinsten 50/50 mellan lagkassan och spelaren. Utan
+        spelare går hela vinsten till lagkassan.
+      </p>
+      <div class="example">
+        <mat-icon>lightbulb</mat-icon>
+        <span>
+          100 st Newbody à 100 kr med inköpspris 50 kr: intäkt 10 000 kr,
+          kostnad 5 000 kr, vinst 5 000 kr → 2 500 kr till lagkassan och 2 500
+          kr till spelaren.
+        </span>
+      </div>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title
+          ><mat-icon>add_circle</mat-icon> Registrera lagintäkt</mat-panel-title
+        >
+      </mat-expansion-panel-header>
+      <p>
+        För pengar som går direkt till lagkassan, t.ex. en gemensam aktivitet.
+      </p>
+      <ol>
+        <li>
+          Klicka <strong>+ Intäkt</strong> på Dashboard eller
+          <strong>Lägg till intäkt</strong> under
+          <a routerLink="/lagkassa">Lagkassa</a>.
+        </li>
+        <li>
+          Fyll i <strong>Belopp</strong>, <strong>Beskrivning</strong>,
+          <strong>Datum</strong> och <strong>Kategori</strong>.
+        </li>
+        <li>Klicka <strong>Spara</strong>.</li>
+      </ol>
+      <p class="muted">Exempel: 5 000 kr, "Gransamling", kategori Övrigt.</p>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title
+          ><mat-icon>remove_circle</mat-icon> Registrera
+          lagutgift</mat-panel-title
+        >
+      </mat-expansion-panel-header>
+      <p>För kostnader som betalas från lagkassan.</p>
+      <ol>
+        <li>
+          Klicka <strong>− Utgift</strong> på Dashboard eller
+          <strong>Lägg till utgift</strong> under
+          <a routerLink="/lagkassa">Lagkassa</a>.
+        </li>
+        <li>
+          Fyll i <strong>Belopp</strong>, <strong>Beskrivning</strong>,
+          <strong>Datum</strong> och <strong>Kategori</strong>.
+        </li>
+        <li>Klicka <strong>Spara</strong>.</li>
+      </ol>
+      <p class="muted">
+        Exempel: 3 000 kr "Göteborgscup" (Cuper) eller 200 kr "Korv efter
+        träning" (Övrigt).
+      </p>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title
+          ><mat-icon>person</mat-icon> Spelaröversikt</mat-panel-title
+        >
+      </mat-expansion-panel-header>
+      <p>
+        Gå till <a routerLink="/spelare">Spelare</a> och klicka på en spelare.
+        Där syns spelarens <strong>individuella kassa</strong>, antal
+        transaktioner och försäljningar samt alla spelarens transaktioner.
+      </p>
+      <ul>
+        <li>
+          <strong>+ Intäkt</strong> / <strong>− Utgift</strong> – pengar in i
+          eller ut ur spelarens egen kassa.
+        </li>
+        <li>
+          <strong>Redigera</strong> – ändra namn, tröjnummer och förälders
+          kontaktuppgifter.
+        </li>
+        <li>
+          <strong>Lämnar laget</strong> – markerar spelaren som inaktiv och för
+          över kvarvarande kassa till lagkassan.
+        </li>
+      </ul>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title
+          ><mat-icon>person_remove</mat-icon> Spelarutgift</mat-panel-title
+        >
+      </mat-expansion-panel-header>
+      <p>
+        När en kostnad ska tas från en spelares egen kassa, t.ex. mat på en cup.
+      </p>
+      <ol>
+        <li>
+          Öppna spelaren under <a routerLink="/spelare">Spelare</a> och klicka
+          <strong>− Utgift</strong>.
+        </li>
+        <li>
+          Fyll i <strong>Belopp</strong>, <strong>Beskrivning</strong>,
+          <strong>Datum</strong> och <strong>Kategori</strong>.
+        </li>
+        <li>
+          Klicka <strong>Spara</strong>. Beloppet dras från spelarens kassa –
+          lagkassan påverkas inte.
+        </li>
+      </ol>
+      <p class="muted">Exempel: 160 kr "Mat till cup", kategori Cuper.</p>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title
+          ><mat-icon>account_balance</mat-icon> Lagkassa</mat-panel-title
+        >
+      </mat-expansion-panel-header>
+      <p>
+        <a routerLink="/lagkassa">Lagkassa</a> visar lagkassans saldo och alla
+        lagets in- och utbetalningar, inklusive lagets andel av försäljningar.
+      </p>
+      <p>
+        Manuellt registrerade lagintäkter och lagutgifter kan tas bort med
+        papperskorgen. Lagandelar från försäljning tas bort genom att
+        försäljningen tas bort under
+        <a routerLink="/forsaljning">Försäljning</a>.
+      </p>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title
+          ><mat-icon>receipt_long</mat-icon> Transaktioner</mat-panel-title
+        >
+      </mat-expansion-panel-header>
+      <p>
+        <a routerLink="/transaktioner">Transaktioner</a> visar alla händelser –
+        både lagets och spelarnas. Filtrera på <strong>typ</strong>,
+        <strong>spelare</strong> och <strong>datum</strong>;
+        <strong>Rensa</strong> tar bort filtren. <strong>Netto</strong> visar
+        summan för det som är filtrerat.
+      </p>
+      <p>
+        <strong>Exportera CSV</strong> laddar ner de filtrerade transaktionerna,
+        t.ex. för att öppna i Excel.
+      </p>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title
+          ><mat-icon>admin_panel_settings</mat-icon>
+          Administration</mat-panel-title
+        >
+      </mat-expansion-panel-header>
+      <p>Knapparna längst ner i sidomenyn:</p>
+      <ul>
+        <li>
+          <strong>Exportera backup</strong> – laddar ner all data som en fil.
+          Gör det regelbundet.
+        </li>
+        <li>
+          <strong>Importera backup</strong> – ersätter <em>all</em> nuvarande
+          data med innehållet i en backupfil. Går inte att ångra.
+        </li>
+        <li>
+          <strong>Bjud in administratör</strong> – visar en QR-kod som en ny
+          administratör skannar för att skapa konto och välja lösenord. Koden
+          kan användas en gång och gäller i 7 dagar.
+        </li>
+      </ul>
+    </mat-expansion-panel>
+  </mat-accordion>
+
+  <p class="footer muted">
+    Har du frågor eller funderingar? Hör av dig till lagets ledare.
+  </p>
+</div>

@@ -1,0 +1,99 @@
+<div class="login-page">
+  <mat-card class="login-card">
+    <div class="logo-header">
+      <img src="fässberg.jpg" alt="Fässbergs IF" class="club-logo" />
+      <h1>Lagkassa P2012</h1>
+      <p class="subtitle">Skapa administratörskonto</p>
+    </div>
+
+    <mat-card-content>
+      @switch (status()) {
+        @case ('checking') {
+          <div class="forgot-link"><mat-spinner diameter="32" style="margin: 0 auto" /></div>
+        }
+        @case ('valid') {
+          <form [formGroup]="form" (ngSubmit)="register()">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>E-post</mat-label>
+              <input matInput formControlName="email" type="email" autocomplete="email" />
+              <mat-icon matPrefix>email</mat-icon>
+              @if (form.get('email')?.hasError('required') && form.get('email')?.touched) {
+                <mat-error>E-post krävs</mat-error>
+              } @else if (form.get('email')?.hasError('email') && form.get('email')?.touched) {
+                <mat-error>Ogiltig e-postadress</mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Lösenord</mat-label>
+              <input matInput formControlName="password"
+                     [type]="showPassword() ? 'text' : 'password'"
+                     autocomplete="new-password" />
+              <mat-icon matPrefix>lock</mat-icon>
+              <button mat-icon-button matSuffix type="button"
+                      (click)="showPassword.set(!showPassword())"
+                      [attr.aria-label]="showPassword() ? 'Dölj lösenord' : 'Visa lösenord'">
+                <mat-icon>{{ showPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+              </button>
+              @if (form.get('password')?.hasError('minlength') && form.get('password')?.touched) {
+                <mat-error>Minst 8 tecken</mat-error>
+              } @else if (form.get('password')?.hasError('required') && form.get('password')?.touched) {
+                <mat-error>Lösenord krävs</mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Upprepa lösenord</mat-label>
+              <input matInput formControlName="confirm"
+                     [type]="showPassword() ? 'text' : 'password'"
+                     autocomplete="new-password" />
+              <mat-icon matPrefix>lock</mat-icon>
+            </mat-form-field>
+
+            @if (form.hasError('mismatch') && form.get('confirm')?.touched) {
+              <div class="error-banner">
+                <mat-icon>error_outline</mat-icon>
+                <span>Lösenorden matchar inte.</span>
+              </div>
+            }
+
+            @if (errorMsg()) {
+              <div class="error-banner">
+                <mat-icon>error_outline</mat-icon>
+                <span>{{ errorMsg() }}</span>
+              </div>
+            }
+
+            <button mat-raised-button color="primary" type="submit"
+                    class="full-width submit-btn" [disabled]="loading() || form.invalid">
+              @if (loading()) {
+                <mat-spinner diameter="20" />
+              } @else {
+                <ng-container><mat-icon>person_add</mat-icon> Skapa konto</ng-container>
+              }
+            </button>
+          </form>
+        }
+        @default {
+          <div class="error-banner">
+            <mat-icon>error_outline</mat-icon>
+            <span>
+              @switch (status()) {
+                @case ('used')    { Inbjudan har redan använts. }
+                @case ('expired') { Inbjudan har gått ut. Be om en ny QR-kod. }
+                @default          { Ogiltig inbjudningslänk. }
+              }
+            </span>
+          </div>
+        }
+      }
+
+      <div class="forgot-link">
+        <a mat-button routerLink="/login">
+          <mat-icon>arrow_back</mat-icon>
+          Till inloggning
+        </a>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

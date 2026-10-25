@@ -47,6 +47,9 @@
           </button>
           <input #backupInput type="file" accept="application/json,.json" hidden
                  (change)="importBackup($event)">
+          <button mat-stroked-button (click)="invite()">
+            <mat-icon>qr_code_2</mat-icon> Bjud in administratör
+          </button>
         </div>
         <div class="user-row">
           <mat-icon class="user-icon">person</mat-icon>

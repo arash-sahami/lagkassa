@@ -9,6 +9,11 @@ export const routes: Routes = [
     title: 'Logga in – Lagkassan',
   },
   {
+    path: 'registrera',
+    loadComponent: () => import('./features/register/register.component').then(m => m.RegisterComponent),
+    title: 'Skapa konto – Lagkassan',
+  },
+  {
     path: 'dashboard',
     loadComponent: () => import('./features/dashboard/dashboard.component').then(m => m.DashboardComponent),
     title: 'Dashboard – Lagkassan',
@@ -42,6 +47,12 @@ export const routes: Routes = [
     path: 'transaktioner',
     loadComponent: () => import('./features/transactions/transactions.component').then(m => m.TransactionsComponent),
     title: 'Transaktioner – Lagkassan',
+    canActivate: [authGuard],
+  },
+  {
+    path: 'hjalp',
+    loadComponent: () => import('./features/help/help.component').then(m => m.HelpComponent),
+    title: 'Hjälp – Lagkassan',
     canActivate: [authGuard],
   },
   { path: '**', redirectTo: 'dashboard' },

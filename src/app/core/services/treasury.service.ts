@@ -23,6 +23,7 @@ export class TreasuryService {
 
   private readonly _data = signal<AppData>(defaultData());
   private isLoading = true;
+  private loadSeq = 0;
   private saveTimer: ReturnType<typeof setTimeout> | null = null;
 
   // ── Derived state ──────────────────────────────────────────────
@@ -249,17 +250,31 @@ export class TreasuryService {
     this._data.set(data);
   }
 
+  /** Re-fetch from Firestore, e.g. after a newly registered user has been granted access. */
+  reload(): Promise<void> {
+    return this.initLoad();
+  }
+
   // ── Private helpers ────────────────────────────────────────────
   private async initLoad(): Promise<void> {
+    const seq = ++this.loadSeq;
+    this.isLoading = true;
+    this.loading.set(true);
     try {
       const data = await this.firestore.load();
-      if (data) this._data.set(data);
-    } catch (e) {
-      console.error('Firestore load failed:', e);
-      this.error.set('Kunde inte ansluta till databasen. Kontrollera internetanslutningen.');
-    } finally {
+      if (seq !== this.loadSeq) return;
+      this._data.set(data ?? defaultData());
+      this.error.set(null);
+      // Only enable auto-save after a successful load, so a failed load can never overwrite real data
       this.isLoading = false;
-      this.loading.set(false);
+    } catch (e: any) {
+      if (seq !== this.loadSeq) return;
+      console.error('Firestore load failed:', e);
+      this.error.set(e?.code === 'permission-denied'
+        ? 'Ditt konto har inte behörighet till lagkassan. Be en administratör om en inbjudan.'
+        : 'Kunde inte ansluta till databasen. Kontrollera internetanslutningen.');
+    } finally {
+      if (seq === this.loadSeq) this.loading.set(false);
     }
   }
 

@@ -51,6 +51,7 @@ export class AppComponent {
     { path: '/lagkassa',      icon: 'account_balance', label: 'Lagkassa' },
     { path: '/forsaljning',   icon: 'point_of_sale',   label: 'Försäljning' },
     { path: '/transaktioner', icon: 'receipt_long',    label: 'Transaktioner' },
+    { path: '/hjalp',         icon: 'help_outline',    label: 'Hjälp' },
   ];
 
   constructor() {
@@ -67,6 +68,12 @@ export class AppComponent {
 
   toggleSidenav() {
     this.sidenavOpened.update(v => !v);
+  }
+
+  async invite() {
+    // Lazy-loaded so the QR library isn't part of the initial bundle
+    const { InviteDialogComponent } = await import('./shared/dialogs/invite-dialog.component');
+    this.dialog.open(InviteDialogComponent, { width: '360px', maxWidth: '95vw' });
   }
 
   async importBackup(event: Event) {
