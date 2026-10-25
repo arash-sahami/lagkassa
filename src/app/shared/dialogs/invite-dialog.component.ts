@@ -58,7 +58,7 @@ export class InviteDialogComponent implements OnInit {
       this.qrDataUrl.set(await QRCode.toDataURL(this.link, { width: 512, margin: 1 }));
     } catch (e) {
       console.error('Create invitation failed:', e);
-      this.error.set('Kunde inte skapa inbjudan.');
+      this.error.set('Kunde inte skapa inbjudan. ' + await this.invitations.diagnose());
     }
   }
 

@@ -45,6 +45,21 @@ export class InvitationService {
     return new URL(`registrera?token=${encodeURIComponent(token)}`, document.baseURI).toString();
   }
 
+  /** Explains why the current user can't create invitations (shown in the invite dialog). */
+  async diagnose(): Promise<string> {
+    const user = this.auth.currentUser;
+    if (!user) return 'Du är inte inloggad.';
+    try {
+      const snap = await getDoc(doc(db, ADMINS_COLLECTION, user.uid));
+      return snap.exists()
+        ? `Du finns i ${ADMINS_COLLECTION}, men regeln för inbjudningar nekade. Kontrollera att publicerade regler matchar firestore.rules.`
+        : `Ditt konto saknas i ${ADMINS_COLLECTION}. Skapa dokumentet ${ADMINS_COLLECTION}/${user.uid} (som rot-samling, inte under lagkassa).`;
+    } catch {
+      // The new rules allow reading your own admin doc – old rules deny it
+      return `De nya Firestore-reglerna verkar inte vara publicerade. Publicera firestore.rules i Firebase-konsolen. Ditt UID: ${user.uid}`;
+    }
+  }
+
   async status(token: string): Promise<InvitationStatus> {
     const snap = await getDoc(doc(db, INVITATIONS_COLLECTION, token));
     if (!snap.exists()) return 'missing';
